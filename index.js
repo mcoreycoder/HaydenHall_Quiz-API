@@ -16,8 +16,16 @@ const getQuestions = async (req, res) => {
 }
 
 // working
-const getUser = async (req, res) => {
+const getUsers = async (req, res) => {
     const results = await users.find({});
+    // console.log('getUsers',results)
+    return send(res, 200, results)
+}
+
+// working
+const getUser = async (req, res) => {
+    let id = req.params.id
+    const results = await users.find({_id: id});
     // console.log('getUser',results)
     return send(res, 200, results)
 }
@@ -40,7 +48,9 @@ const deleteUser = async (req, res) => {
     return send(res, 200, results)
 }
 
+//seems to be working
 const updateScore = async (req, res) => {
+    console.log('req.params.id', req.params.id)
     let id = req.params.id
     const data = await json(req)
     // console.log('updateScore',data) // Validation might go here
@@ -53,10 +63,11 @@ const notfound = (req, res) => send(res, 404, 'Not found route')
 
 module.exports = cors(
     router(
-        put('/user', updateScore),
+        put('/user/:id', updateScore),
         post('/user', createUser),
         get('/questions', getQuestions), // needs id added to make unique, could just pass in all user info 
-        get('/user', getUser),
+        get('/users', getUsers),
+        get('/user/:id', getUser),
         del('/user/:id',deleteUser),
         get('/*', notfound)
         )
